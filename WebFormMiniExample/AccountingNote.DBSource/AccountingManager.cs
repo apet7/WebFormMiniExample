@@ -12,23 +12,13 @@ namespace AccountingNote.DBSource
     public class AccountingManager
     {
         /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        private static string GetConnectionString()
-        {
-            string val = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            return val;
-        }
-
-        /// <summary>
         /// 查詢流水帳清單
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
         public static DataTable GetAccountingList(string userID)
         {
-            string connStr = GetConnectionString();
+            string connStr = DBHelper.GetConnectionString();
             string dbCommand =
                 $@" SELECT
                         ID,
@@ -39,32 +29,21 @@ namespace AccountingNote.DBSource
                     FROM Accounting
                     WHERE UserID = @userID
                 ";
-            using (SqlConnection conn = new SqlConnection(connStr))
+
+            List<SqlParameter> list = new List<SqlParameter>();
+            list.Add(new SqlParameter("@userID", userID));
+
+            try
             {
-                using (SqlCommand comm = new SqlCommand(dbCommand, conn))
-                {
-                    comm.Parameters.AddWithValue("@userID", userID);
-
-                    try
-                    {
-                        conn.Open();
-                        var reader = comm.ExecuteReader();
-
-                        DataTable dt = new DataTable();
-                        dt.Load(reader);
-
-                        return dt;
-                    }
-                    catch(Exception ex)
-                    {
-                        Logger.WriteLog(ex);
-                        return null;
-                    }
-                }
+                return DBHelper.ReadDataTable(connStr, dbCommand, list);
             }
-
+            catch (Exception ex)
+            {
+                Logger.WriteLog(ex);
+                return null;
+            }
         }
-
+                
         /// <summary>
         /// 查詢流水帳
         /// </summary>
@@ -72,7 +51,7 @@ namespace AccountingNote.DBSource
         /// <returns></returns>
         public static DataRow GetAccounting(int id, string userID)
         {
-            string connStr = GetConnectionString();
+            string connStr = DBHelper.GetConnectionString();
             string dbCommand =
                 $@" SELECT
                         ID,                        
@@ -84,34 +63,23 @@ namespace AccountingNote.DBSource
                     FROM Accounting
                     WHERE ID = @id AND UserID = @userID
                 ";
-            using (SqlConnection conn = new SqlConnection(connStr))
+
+            List<SqlParameter> list = new List<SqlParameter>();
+            list.Add(new SqlParameter("@id", id));
+            list.Add(new SqlParameter("@userID", userID));
+
+            try
             {
-                using (SqlCommand comm = new SqlCommand(dbCommand, conn))
-                {
-                    comm.Parameters.AddWithValue("@id", id);
-                    comm.Parameters.AddWithValue("@userID", userID);
-
-                    try
-                    {
-                        conn.Open();
-                        var reader = comm.ExecuteReader();
-
-                        DataTable dt = new DataTable();
-                        dt.Load(reader);
-
-                        if (dt.Rows.Count == 0)
-                            return null;
-                        return dt.Rows[0];
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.WriteLog(ex);
-                        return null;
-                    }
-                }
+                return DBHelper.GetDataRow(connStr, dbCommand, list);
             }
-
+            catch (Exception ex)
+            {
+                Logger.WriteLog(ex);
+                return null;
+            }
         }
+
+        
 
         /// <summary>
         /// 建立流水帳
@@ -130,7 +98,7 @@ namespace AccountingNote.DBSource
                 throw new ArgumentException("ActType must be 0 or 1.");
             // check opint
 
-            string connStr = GetConnectionString();
+            string connStr = DBHelper.GetConnectionString();
             string dbCommand =
                 $@" INSERT INTO [dbo].[Accounting]
                    (
@@ -194,7 +162,7 @@ namespace AccountingNote.DBSource
                 throw new ArgumentException("ActType must be 0 or 1.");
             // check opint
 
-            string connStr = GetConnectionString();
+            string connStr = DBHelper.GetConnectionString();
             string dbCommand =
                 $@" UPDATE [Accounting]
                     SET UserID          = @userID
@@ -248,7 +216,7 @@ namespace AccountingNote.DBSource
         /// <param name="body"></param>
         public static void DeleteAccounting(int ID)
         {
-            string connStr = GetConnectionString();
+            string connStr = DBHelper.GetConnectionString();
             string dbCommand =
                 $@" DELETE [Accounting]
                     WHERE ID = @id ";
