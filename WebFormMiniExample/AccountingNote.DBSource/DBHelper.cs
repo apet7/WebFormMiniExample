@@ -45,23 +45,23 @@ namespace AccountingNote.DBSource
                 using (SqlCommand comm = new SqlCommand(dbCommand, conn))
                 {
                     comm.Parameters.AddRange(list.ToArray());
-                                       
+
                     conn.Open();
                     var reader = comm.ExecuteReader();
 
                     DataTable dt = new DataTable();
-                      dt.Load(reader);
+                    dt.Load(reader);
 
                     if (dt.Rows.Count == 0)
-                      return null;
-                    return dt.Rows[0];    
-                    
-                    
+                        return null;
+                    return dt.Rows[0];
+
+
                 }
             }
         }
 
-        public static void ModifyData(string connStr, string dbCommand, List<SqlParameter> paramList)
+        public static int ModifyData(string connStr, string dbCommand, List<SqlParameter> paramList)
         {
             // connect db & execute
             using (SqlConnection conn = new SqlConnection(connStr))
@@ -69,10 +69,11 @@ namespace AccountingNote.DBSource
                 using (SqlCommand comm = new SqlCommand(dbCommand, conn))
                 {
                     comm.Parameters.AddRange(paramList.ToArray());
-
                     conn.Open();
                     comm.ExecuteNonQuery();
 
+                    int effectRowsCount = comm.ExecuteNonQuery();
+                    return effectRowsCount;
                 }
             }
         }

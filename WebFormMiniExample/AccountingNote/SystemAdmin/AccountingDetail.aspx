@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
 </head>
 <body>
@@ -20,12 +20,11 @@
                     <a href="UserInfo.aspx">使用者資訊</a><br />
                     <a href="AccountingList.aspx">流水帳管理</a>
                 </td>
-                <td>
-                    Type: 
+                <td>Type: 
                     <asp:DropDownList ID="ddlActType" runat="server">
                         <asp:ListItem Value="0">支出</asp:ListItem>
                         <asp:ListItem Value="1">收入</asp:ListItem>
-                          </asp:DropDownList>
+                    </asp:DropDownList>
                     <br />
                     Amount:
                     <asp:TextBox ID="txtAmount" runat="server" TextMode="Number"></asp:TextBox>
@@ -37,7 +36,7 @@
                     <asp:TextBox ID="txtDesc" runat="server" TextMode="MultiLine"></asp:TextBox>
                     <br />
                     <asp:Button ID="btmSave" runat="server" Text="Save" OnClick="btmSave_Click" />
-                    <asp:Button ID="btmDelete" runat="server" Text="Del" OnClick="btmDelete_Click"/>
+                    <asp:Button ID="btmDelete" runat="server" Text="Del" OnClick="btmDelete_Click" />
                     <asp:Literal ID="ltMsg" runat="server"></asp:Literal>
                 </td>
             </tr>
