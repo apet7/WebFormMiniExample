@@ -1,4 +1,5 @@
-﻿using AccountingNote.DBSource;
+﻿using AccountingNote.Auth;
+using AccountingNote.DBSource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,35 +29,45 @@ namespace AccountingNote
             string inp_Account = this.txtAccount.Text;
             string inp_PWD = this.txtPWD.Text;
 
-            // check empty
-            if (string.IsNullOrWhiteSpace(inp_Account) || string.IsNullOrWhiteSpace(inp_PWD))
+            string msg;
+            if(!AuthManager.TryLogin(inp_Account, inp_PWD, out msg))
             {
-                this.ltlMsg.Text = "Account / PWD is required.";
+                this.ltlMsg.Text = msg;
                 return;
             }
 
-            var dr = UserInfoManager.GetUserInfoByAccount(inp_Account);
+            Response.Redirect("/SystemAdmin/UserInfo.aspx");
 
-            // check null
-            if (dr == null)
-            {
-                this.ltlMsg.Text = "Account / PWD doesn't exists.";
-                return;
-            }
 
-            // check account / PWD
-            // true為不區分大小寫，false為要區分大寫
-            if (string.Compare(dr["Account"].ToString(), inp_Account, true) == 0 &&
-               string.Compare(dr["PWD"].ToString(), inp_PWD, false) == 0)
-            {
-                this.Session["UserLoginInfo"] = dr["Account"].ToString();
-                Response.Redirect("/SystemAdmin/UserInfo.aspx");
-            }
-            else
-            {
-                this.ltlMsg.Text = "Login fail. Please check Account / PWD.";
-                return;
-            }
+            //// check empty
+            //if (string.IsNullOrWhiteSpace(inp_Account) || string.IsNullOrWhiteSpace(inp_PWD))
+            //{
+            //    this.ltlMsg.Text = "Account / PWD is required.";
+            //    return;
+            //}
+
+            //var dr = UserInfoManager.GetUserInfoByAccount(inp_Account);
+
+            //// check null
+            //if (dr == null)
+            //{
+            //    this.ltlMsg.Text = "Account / PWD doesn't exists.";
+            //    return;
+            //}
+
+            //// check account / PWD
+            //// true為不區分大小寫，false為要區分大寫
+            //if (string.Compare(dr["Account"].ToString(), inp_Account, true) == 0 &&
+            //   string.Compare(dr["PWD"].ToString(), inp_PWD, false) == 0)
+            //{
+            //    this.Session["UserLoginInfo"] = dr["Account"].ToString();
+            //    Response.Redirect("/SystemAdmin/UserInfo.aspx");
+            //}
+            //else
+            //{
+            //    this.ltlMsg.Text = "Login fail. Please check Account / PWD.";
+            //    return;
+            //}
         }
     }
 }
